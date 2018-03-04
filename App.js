@@ -1,14 +1,3 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import App from './src/App.js';
 
-import { Header } from './src/Components';
-
-export default class App extends React.Component {
-  render() {
-    return (
-      <View>
-          <Header/>
-      </View>
-    );
-  }
-}
+export default App;

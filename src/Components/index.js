@@ -1,3 +1,4 @@
-import Header from './Header.jsx';
+import HomePageScreen from './HomePage/HomePage.js';
+import AboutScreen from './About/About.js';
 
-export { Header };
+export { HomePageScreen, AboutScreen };
