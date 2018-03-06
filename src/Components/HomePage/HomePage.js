@@ -1,28 +1,31 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, Text, Button, Image } from 'react-native';
-import { styles } from '../../Globals.js';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+
+import { gStyles } from '../../Globals.js';
+import { ButtonPrimary } from '../UI/Buttons.js';
 
 class HomePageScreen extends React.Component {
-    static navigationOptions = ({ navigation }) => {
-        return ({
-            drawerLabel: 'Home',
-            drawerIcon: ({ tintColor }) => (
-                <Image
-                    source={require('../../Res/DrawerIcons/home.png')}
-                    style={[styles.icon, {tintColor: tintColor}]}
-                />
-            ),
-        });
-    };
     render() {
         return (
-            <Text style={{ fontSize: 50, paddingTop: 100 }}>
-                J'aime les Moules et les frites
-            </Text>
+            <View style={styles.globalView}>
+                <ButtonPrimary text="Work in Progress" onPress={() => {alert("Hooray!")}}/>
+            </View>
         );
     }
 };
+
+const styles = StyleSheet.create({
+    globalView: {
+        backgroundColor: 'white',
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    primaryButton: {},
+    secondaryButton: {},
+});
 
 //Redux Higher Order
 const mapStateToProps = (state, ownProps) => {

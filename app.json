@@ -1,5 +1,12 @@
 {
   "expo": {
-    "sdkVersion": "25.0.0"
+    "sdkVersion": "25.0.0",
+    "icon": "./src/Res/app_icon_small.png",
+    "name": "Speech Tests",
+    "splash": {
+      "image": "./src/Res/splash.png",
+      "backgroundColor": "#36BEAA",
+      "resizeMode": "contain"
+    }
   }
 }
