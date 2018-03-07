@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Image, Icon } from 'react-native';
+import { StyleSheet, ScrollView, Image, Icon, Text, TouchableOpacity, View } from 'react-native';
 import { StackNavigator, DrawerNavigator, DrawerItems, SafeAreaView } from 'react-navigation';
 
 import { HomePageScreen, AboutScreen, ProfileScreen, SettingsScreen, TestSessionScreen } from './Components';
 import G, { gStyles } from './Globals.js';
 import { TestList, ReadyScreen, Proto } from './Components/TestSession';
 
+const HamburgerHeader = ({ navigation }) => {
+    return (
+        <TouchableOpacity onPress={ () => navigation.navigate('DrawerOpen') }>
+            <Image
+                style={{ tintColor: '#fff', marginLeft:15, width: 25, height: 25}}
+                source={require('./Res/DrawerIcons/hamburger-square.png')}
+            />
+        </TouchableOpacity>
+    );
+};
 
 const CustomDrawerContentComponent = (props) => (
     <ScrollView>
@@ -34,6 +44,8 @@ const AboutNav = StackNavigator({
                 textAlign: "center",
                 flex: 1,
             },
+            headerRight: <View/>,
+            headerLeft: <HamburgerHeader navigation={navigation}/>,
         })
     },
 });
@@ -43,7 +55,7 @@ const TestSessionNav = StackNavigator({
         'screen': TestList,
         'navigationOptions': ({ navigation }) => ({
             title: 'Choose a Test',
-            headerLeft: <Icon name="menu" size={35} onPress={ () => navigation.navigate('DrawerOpen') } />,
+            headerLeft: <HamburgerHeader navigation={navigation}/>,
         })
     },
     'SentenceValidatorReady': {
@@ -65,6 +77,7 @@ const TestSessionNav = StackNavigator({
             backgroundColor: G["primary-color"],
         },
         headerTintColor: '#fff',
+        headerRight: <View/>,
         headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center",

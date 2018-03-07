@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { TouchableOpacity, Text, View, StyleSheet } from 'react-native';
 
 import G from '../../Globals.js';
@@ -10,7 +11,7 @@ const HugoButton = ({ text, onPress, color = G["primary-color"] }) => {
         <TouchableOpacity
             activeOpacity={0.4}
             style={[hugoButtonStyles.buttonStyle, { backgroundColor: color, borderColor: color }]}
-            onPress={onPress}>
+            onPress={() => { onPress() }}>
             <Text style={hugoButtonStyles.textStyle}>{text}</Text>
         </TouchableOpacity>
     );
@@ -41,6 +42,14 @@ const hugoButtonStyles = StyleSheet.create({
         shadowRadius: G.buttons["shadowRadius"],
     }
 });
+
+/*HugoButton.propTypes = {
+    bite: PropTypes.string,
+    kekekek: PropTypes.any,
+    onPress: PropTypes.any,
+    text: PropTypes.string,
+    color: PropTypes.string,
+};*/
 
 export default HugoButton;
 

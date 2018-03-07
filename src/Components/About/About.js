@@ -4,7 +4,9 @@ import GridView from 'react-native-super-grid';
 
 import G, { gStyles } from '../../Globals.js';
 import HugoButton, { ButtonSuccess, ButtonDanger, ButtonPrimary, ButtonSecondary, ButtonWarning } from '../UI/Buttons.js';
+import HugoList from '../UI/List';
 import Header from '../UI/Header.js';
+import { aboutList } from './Data';
 
 ///////// Grid //////////
 const items = [
@@ -28,7 +30,7 @@ const renderButtonPanel = (item) => {
 export default class AboutScreen extends React.Component {
     render() {
         return (
-            <View style={{flex:1}}>
+            <View style={styles.globalView}>
                 <ScrollView>
                     <Header text="Button Showcase" textStyle={{ color: 'black', fontSize: 18 }}/>
                     <View style={styles.buttonGrid}>
@@ -39,11 +41,14 @@ export default class AboutScreen extends React.Component {
                             renderItem={renderButtonPanel}
                         />
                     </View>
+
+                    <Header text="List Showcase" wrapperStyle={{ marginTop: 10 }} textStyle={{ color: 'black', fontSize: 18 }}/>
+                    <HugoList data={aboutList} />
+
                     <Header text="Proto" wrapperStyle={{ marginTop: 10 }} textStyle={{ color: 'black', fontSize: 18 }}/>
-                    <View style={styles.lorem}>
+                    <View style={styles.container}>
                         <Text>{ G.lorem }</Text>
                     </View>
-
                 </ScrollView>
             </View>
         );
@@ -51,22 +56,18 @@ export default class AboutScreen extends React.Component {
 };
 
 const styles = StyleSheet.create({
+    globalView: {
+        flex:1,
+        backgroundColor: G["bacground-color-view"],
+    },
     buttonGrid: {
         flex:1,
         marginBottom: 10,
-        backgroundColor: '#f1f1f1',
-    },
-    buttonGridRow: {
-        flex:1,
-        flexDirection: 'row',
-        justifyContent: 'space-around',
     },
 
     //Proto Content
-    lorem: {
-        backgroundColor: '#f1f1f1',
-        paddingTop: 10,
-        paddingBottom: 10,
+    container: {
+        padding:10,
     },
 
     //Grid Content

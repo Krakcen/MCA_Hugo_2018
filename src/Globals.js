@@ -4,8 +4,11 @@ export default G = {
     "app-name": "Speech Tests",
     "primary-color": '#36BEAA',
     "primary-color-border": '#38cbb7',
+    "third-color": '#BF5D36',
+    "third-color-border": '#d06139',
     "secondary-color": '#6c757d',
     "secondary-color-border": '#6c757d',
+    "bacground-color-view": '#f9f9f9',
     "buttons": {
         "fontSize": 20,
         "fontWeight": 'bold',
