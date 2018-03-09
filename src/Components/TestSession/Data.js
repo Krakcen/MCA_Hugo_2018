@@ -1,14 +1,8 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Platform } from 'react-native';
-import { List, ListItem, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import G from '../../Globals';
 
-import G, { gStyles } from '../../Globals.js';
-
-import HugoList from '../UI/List.js';
-import HugoButton from '../UI/Buttons.js';
-
-const testList = [
+export const testList = [
     {
         text: 'Sentence Validator',
         subtitle: 'a test to measure the patient ability to restore vocally a serie of sentences',
@@ -28,20 +22,3 @@ const testList = [
         chevronColor: G["third-color"],
     },
 ];
-
-export default class TestList extends React.Component {
-    render() {
-        return (
-            <View style={styles.globalView}>
-                <HugoList data={testList}/>
-            </View>
-        );
-    }
-};
-
-const styles = StyleSheet.create({
-    globalView: {
-        flex:1,
-        backgroundColor: G["bacground-color-view"],
-    },
-});

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Image, Icon, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, ScrollView, Image, Icon, Text, TouchableOpacity, View, Easing, Animated } from 'react-native';
 import { StackNavigator, DrawerNavigator, DrawerItems, SafeAreaView } from 'react-navigation';
 
-import { HomePageScreen, AboutScreen, ProfileScreen, SettingsScreen, TestSessionScreen } from './Components';
+import { HomePageScreen, AboutScreen, ProfileScreen, SettingsScreen, TestListScreen } from './Components';
 import G, { gStyles } from './Globals.js';
-import { TestList, ReadyScreen, Proto } from './Components/TestSession';
+import { ReadyScreen, Proto } from './Components/TestSession/SentenceValidator';
+import { transitionTest, transitionPress, transitionSlideLeft, transitionSlideTop } from './Components/UI/Animations';
 
 const HamburgerHeader = ({ navigation }) => {
     return (
@@ -30,6 +31,28 @@ const customDrawerStyles = StyleSheet.create({
     },
 });
 
+////////////////////////////////////////////////////////
+
+const SettingsNav = StackNavigator({
+    'Settings': {
+        'screen': SettingsScreen,
+        'navigationOptions': ({ navigation }) => ({
+            title: 'Settings',
+            headerStyle: {
+                backgroundColor: G["primary-color"],
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                textAlign: "center",
+                flex: 1,
+            },
+            headerRight: <View/>,
+            headerLeft: <HamburgerHeader navigation={navigation}/>,
+        })
+    },
+});
+
 const AboutNav = StackNavigator({
     'About': {
         'screen': AboutScreen,
@@ -50,9 +73,29 @@ const AboutNav = StackNavigator({
     },
 });
 
+//
+const SentenceValidatorItemNav = StackNavigator({
+    'SentenceValidatorItem': {
+        'screen': SettingsScreen,
+        'navigationOptions': ({ navigation }) => ({
+            title: 'Settings',
+            headerStyle: {
+                backgroundColor: G["primary-color"],
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                textAlign: "center",
+                flex: 1,
+            },
+            headerRight: <View/>,
+            headerLeft: <HamburgerHeader navigation={navigation}/>,
+        })
+    },
+});
 const TestSessionNav = StackNavigator({
     'TestList': {
-        'screen': TestList,
+        'screen': TestListScreen,
         'navigationOptions': ({ navigation }) => ({
             title: 'Choose a Test',
             headerLeft: <HamburgerHeader navigation={navigation}/>,
@@ -72,6 +115,7 @@ const TestSessionNav = StackNavigator({
     }
 }, {
     initialRouteName: 'TestList',
+    transitionConfig: transitionTest,
     'navigationOptions': ({ navigation }) => ({
         headerStyle: {
             backgroundColor: G["primary-color"],
@@ -85,6 +129,7 @@ const TestSessionNav = StackNavigator({
         },
     })
 });
+//
 
 const DrawerNav = DrawerNavigator({
     'Home': {
@@ -124,7 +169,7 @@ const DrawerNav = DrawerNavigator({
         },
     },
     'Settings': {
-        'screen': SettingsScreen,
+        'screen': SettingsNav,
         'navigationOptions': {
             'drawerLabel': 'Settings',
             'drawerIcon': ({ tintColor }) => (

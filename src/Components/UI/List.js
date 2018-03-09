@@ -6,7 +6,7 @@ import G from '../../Globals';
 
 const HugoItem = ({ item, index }) => {
     return (
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={() => (item.onPress ? item.onPress() : null) }>
             <ListItem
                 titleNumberOfLines={10}
                 subtitleNumberOfLines={10}
@@ -23,6 +23,7 @@ const HugoItem = ({ item, index }) => {
                 subtitle={ item.subtitle || null }
                 leftIcon={ item.icon || null}
                 chevronColor={item.chevronColor || null}
+                hideChevron={item.hideChevron || null}
             />
         </TouchableOpacity>
     );

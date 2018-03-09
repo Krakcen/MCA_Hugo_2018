@@ -4,14 +4,17 @@
     "icon": "./src/Res/app_icon_small.png",
     "name": "Speech Tests",
     "version": "0.1.0",
-    "slug": "https://expo.io/@kraken/speech-tests",
+    "slug": "speech-tests",
     "splash": {
       "image": "./src/Res/splash.png",
       "backgroundColor": "#36BEAA",
       "resizeMode": "contain"
+    },
+    "android": {
+      "package": "com.minikraken.speechtests"
+    },
+    "ios": {
+      "bundleIdentifier": "com.minikraken.speechtests"
     }
-  },
-  "android": {
-    "package": "com.minikraken.speechtests"
   }
 }

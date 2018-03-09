@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Button, Image, StyleSheet } from 'react-native';
-import { gStyles } from '../../Globals.js';
+import G, { gStyles } from '../../Globals.js';
 
 export default class ProfileScreen extends React.Component {
     render() {
@@ -14,7 +14,7 @@ export default class ProfileScreen extends React.Component {
 
 const styles = StyleSheet.create({
     globalView: {
-        backgroundColor: 'dodgerblue',
+        backgroundColor: G["primary-color"],
         color :'white',
         fontWeight: 'bold',
         flex: 1,
