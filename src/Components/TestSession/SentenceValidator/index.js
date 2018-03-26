@@ -1,4 +1,4 @@
 import ReadyScreen from './ReadyScreen';
-import Proto from './Proto';
+import SingleTest from './SingleTest';
 
-export { ReadyScreen, Proto };
+export { ReadyScreen,  SingleTest};

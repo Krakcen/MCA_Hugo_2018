@@ -5,7 +5,6 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, StatusBar, D
 import G, { gStyles } from '../../Globals.js';
 import HugoButton, { ButtonPrimary } from '../UI/Buttons.js';
 
-
 const whichOrientation = () => {
     const dim = Dimensions.get('screen');
 
@@ -15,11 +14,6 @@ const whichOrientation = () => {
 };
 
 class HomePageScreen extends React.Component {
-    _navigateTestSession() {
-        console.log("MDMMRMM");
-        this.props.navigation.navigate('TestSession');
-        return ("MFMEJ");
-    }
     render() {
         return (
             <View style={styles.globalView} onLayout={event => this.forceUpdate()}>
@@ -35,11 +29,11 @@ class HomePageScreen extends React.Component {
                         </View>
                         <View style={ styles.contentView }>
                             <View style={ styles.appIconWrapper }>
-                                <Image style={ styles.appIcon } source={require('../../Res/app_icon.png')}/>
+                                <Image resizeMode='cover' style={ styles.appIcon } source={require('../../Res/Brand/brand-text-white.png')}/>
                             </View>
-                            <View style={ styles.appNameWrapper }>
+                            {/*<View style={ styles.appNameWrapper }>
                                 <Text style={ styles.appName }>{ G["app-name"] }</Text>
-                            </View>
+                            </View>*/}
                             <View style={ styles.buttonGroupWrapper }>
                                 <HugoButton
                                     onPress={() => this.props.navigation.navigate('TestSession')}
@@ -53,6 +47,7 @@ class HomePageScreen extends React.Component {
                         <View>
                             <TouchableOpacity onPress={ () => this.props.navigation.navigate('DrawerOpen') }>
                                 <Image
+
                                     style={ landscapeStyles.hamburgerIcon }
                                     source={require('../../Res/DrawerIcons/hamburger-square.png')}
                                 />
@@ -62,22 +57,17 @@ class HomePageScreen extends React.Component {
 
                             <View style={ landscapeStyles.brand }>
                                 <View style={ landscapeStyles.appIconWrapper }>
-                                    <Image style={ landscapeStyles.appIcon } source={require('../../Res/app_icon.png')}/>
-                                </View>
-                                <View style={ landscapeStyles.appNameWrapper }>
-                                    <Text style={ landscapeStyles.appName }>{ G["app-name"] }</Text>
-                                </View>
-                            </View>
-
-                            <View style={ landscapeStyles.button }>
-                                <View style={ landscapeStyles.buttonGroupWrapper }>
-                                    <HugoButton
-                                        onPress={() => this.props.navigation.navigate('TestSession')}
-                                        text="New Test"
-                                        color={ '#BF5D36' }
+                                    <Image
+                                        style={ landscapeStyles.appIcon }
+                                        source={require('../../Res/Brand/st-blanc-ligne.png')}
                                     />
                                 </View>
                             </View>
+                            {/*<View style={ landscapeStyles.brand }>
+                                <View style={ landscapeStyles.appIconWrapper }>
+                                    <Image style={ landscapeStyles.appIcon } resizeMode={'contain'} source={require('../../Res/Brand/st-blanc-ligne.png')}/>
+                                </View>
+                            </View>*/}
 
                         </View>
                     </View>
@@ -109,13 +99,15 @@ const styles = StyleSheet.create({
     },
     appIconWrapper: {
         //flex:1,
+        //backgroundColor: 'purple',
+
         alignItems: 'center',
         paddingTop: 20,
         paddingBottom:20,
     },
     appIcon: {
-        width: 150,
-        height: 150,
+        width: 200,
+        height: 100
     },
     appNameWrapper: {
         //flex:1,
@@ -140,11 +132,8 @@ const styles = StyleSheet.create({
 const landscapeStyles = StyleSheet.create({
     brand: {
         //backgroundColor: 'orange',
-        width: Dimensions.get('screen').width / 3,
-    },
-    button: {
-        //backgroundColor:'purple',
-        width: Dimensions.get('screen').width / 3,
+        width: Dimensions.get('screen').width / 1.2,
+        alignItems: 'center',
     },
     hamburgerIcon: {
         //backgroundColor: 'blue',
@@ -159,18 +148,20 @@ const landscapeStyles = StyleSheet.create({
         margin: 20,
         flex:1,
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'center',
         alignItems: 'center',
     },
     appIconWrapper: {
-        //flex:1,
-        alignItems: 'center',
-        paddingTop: 20,
-        paddingBottom:20,
+        //backgroundColor: 'purple',
+        flex: 1,
+        flexDirection: "row",
+        alignItems: "stretch"
     },
     appIcon: {
-        width: 150,
-        height: 150,
+        flex: 1,
+        width: null,
+        height: null,
+        resizeMode: 'contain',
     },
     appNameWrapper: {
         //flex:1,

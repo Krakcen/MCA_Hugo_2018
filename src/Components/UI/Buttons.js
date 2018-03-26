@@ -11,7 +11,7 @@ const HugoButton = ({ text, onPress, color = G["primary-color"] }) => {
         <TouchableOpacity
             activeOpacity={0.4}
             style={[hugoButtonStyles.buttonStyle, { backgroundColor: color, borderColor: color }]}
-            onPress={() => { onPress() }}>
+            onPress={onPress}>
             <Text style={hugoButtonStyles.textStyle}>{text}</Text>
         </TouchableOpacity>
     );

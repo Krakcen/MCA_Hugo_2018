@@ -4,7 +4,7 @@ import { StackNavigator, DrawerNavigator, DrawerItems, SafeAreaView } from 'reac
 
 import { HomePageScreen, AboutScreen, ProfileScreen, SettingsScreen, TestListScreen } from './Components';
 import G, { gStyles } from './Globals.js';
-import { ReadyScreen, Proto } from './Components/TestSession/SentenceValidator';
+import { ReadyScreen, SingleTest } from './Components/TestSession/SentenceValidator';
 import { transitionTest, transitionPress, transitionSlideLeft, transitionSlideTop } from './Components/UI/Animations';
 
 const HamburgerHeader = ({ navigation }) => {
@@ -18,6 +18,7 @@ const HamburgerHeader = ({ navigation }) => {
     );
 };
 
+////////////////////////////////////////////////////////
 const CustomDrawerContentComponent = (props) => (
     <ScrollView>
         <SafeAreaView style={customDrawerStyles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
@@ -30,7 +31,6 @@ const customDrawerStyles = StyleSheet.create({
         flex: 1,
     },
 });
-
 ////////////////////////////////////////////////////////
 
 const SettingsNav = StackNavigator({
@@ -73,26 +73,30 @@ const AboutNav = StackNavigator({
     },
 });
 
-//
-const SentenceValidatorItemNav = StackNavigator({
-    'SentenceValidatorItem': {
-        'screen': SettingsScreen,
+//SentenceValidator Navigator
+const SentenceValidatorNav = StackNavigator({
+    'SentenceValidatorStart': {
+        'screen': ReadyScreen,
         'navigationOptions': ({ navigation }) => ({
-            title: 'Settings',
-            headerStyle: {
-                backgroundColor: G["primary-color"],
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-                fontWeight: 'bold',
-                textAlign: "center",
-                flex: 1,
-            },
-            headerRight: <View/>,
-            headerLeft: <HamburgerHeader navigation={navigation}/>,
+            title: 'Sentence Validator',
+            drawerLockMode: 'locked-closed',
         })
     },
+    'SingleTest': {
+        'screen': SingleTest,
+        'navigationOptions': ({ navigation }) => ({
+            title: 'Single Test',
+            drawerLockMode: 'locked-closed',
+        })
+    }
+}, {
+    initialRouteName: 'SentenceValidatorStart',
+    transitionConfig: transitionSlideTop,
+    headerMode: 'none',
 });
+
+/////////////////////////////
+
 const TestSessionNav = StackNavigator({
     'TestList': {
         'screen': TestListScreen,
@@ -102,20 +106,14 @@ const TestSessionNav = StackNavigator({
         })
     },
     'SentenceValidatorReady': {
-        'screen': ReadyScreen,
+        'screen': SentenceValidatorNav,
         'navigationOptions': ({ navigation }) => ({
             title: 'Sentence Validator',
-        })
-    },
-    'Proto': {
-        'screen': Proto,
-        'navigationOptions': ({ navigation }) => ({
-            title: 'Proto',
         })
     }
 }, {
     initialRouteName: 'TestList',
-    transitionConfig: transitionTest,
+    transitionConfig: transitionSlideLeft,
     'navigationOptions': ({ navigation }) => ({
         headerStyle: {
             backgroundColor: G["primary-color"],

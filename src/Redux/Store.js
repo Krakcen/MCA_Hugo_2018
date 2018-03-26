@@ -8,7 +8,7 @@ import logger from 'redux-logger';
 import Reducers from './reducers';
 
 
-const middleware = applyMiddleware(thunk, promise, logger);
+const middleware = applyMiddleware(thunk, promise/*, logger*/);
 
 const Store = createStore(
     Reducers,

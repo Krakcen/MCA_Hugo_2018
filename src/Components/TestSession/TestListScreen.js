@@ -14,7 +14,7 @@ export default class TestListScreen extends React.Component {
         this._testList = testList;
         for (let el in this._testList) {
             if (this._testList[el].text == "Sentence Validator") {
-                this._testList[el].onPress = () => this.props.navigation.navigate('SentenceValidatorReady');
+                this._testList[el].onPress = () => this.props.navigation.navigate('SentenceValidatorReady' );
             }
         }
     }
