@@ -5,6 +5,10 @@ export default StoreInit = {
         "sentenceValidator": {
             "sessionStep": 0,
             "started": false,
+            "playing": false,
+            "recording": false,
+            "voiceRecorded": false,
+            "statusBar": "Play Audio File"
         },
     },
 };

@@ -93,6 +93,7 @@ const SentenceValidatorNav = StackNavigator({
     initialRouteName: 'SentenceValidatorStart',
     transitionConfig: transitionSlideTop,
     headerMode: 'none',
+    //gesturesEnabled: false,
 });
 
 /////////////////////////////

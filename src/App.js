@@ -13,7 +13,7 @@ export default class App extends Component {
         this.onNavStateChange = this.onNavStateChange.bind(this);
     }
     onNavStateChange(prevState, currentState) {
-        console.log('onNavigationStateChange()');
+        //console.log('onNavigationStateChange()');
         updateFocus(currentState);
     }
     render() {

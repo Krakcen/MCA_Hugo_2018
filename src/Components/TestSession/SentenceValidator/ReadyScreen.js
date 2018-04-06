@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Text, Button, Image, StyleSheet } from 'react-native';
+import { View, Text, Button, Image, StyleSheet, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { setCurrentTest, setTest } from '../../../Redux/Actions';
+import { CheckBox } from 'react-native-elements';
 
+import Header from '../../UI/Header.js';
 import HugoButton from '../../UI/Buttons.js';
 import G, { gStyles } from '../../../Globals.js';
 
@@ -21,21 +23,49 @@ class ReadyScreen extends React.Component {
         });
     }
     continueTest() {
+        this.props.setTest("sentenceValidator", {
+            "started": false,
+            "playing": false,
+            "recording": false,
+            "voiceRecorded": false,
+        });
         this.props.navigation.navigate('SingleTest', {
             sessionStep: this.props.tests["sentenceValidator"].sessionStep,
         });
     }
     render() {
+        //console.log(Dimensions.get('screen').height * 0.3 + " WTF");
         return (
             <View style={styles.globalView}>
                 {this.props.tests["sentenceValidator"].sessionStep
-                    ? <View>
-                        <HugoButton onPress={this.continueTest} text="Continue Session" color={G["third-color"]}/>
-                        <HugoButton onPress={this.startTest} text="Start new Session" color={G["secondary-color"]}/>
+                    ? <View style={{flex: 1}}>
+                        <Header text="You have a session in progress" textStyle={{ color: 'black', fontSize: 18 }}/>
+                        <View style={styles.sessionDescription}>
+                            <View style={{flex: 1, justifyContent: 'space-around', alignItems:'center'}}>
+                                <Text style={{fontSize: 14}}>Standard Mode</Text>
+                                <Text style={{fontSize: 14}}>Progress: 4/10</Text>
+                            </View>
+                        </View>
+                        <View style={styles.ButtonsGroup}>
+
+                            <View style={styles.buttonBlock}>
+                                <HugoButton onPress={this.continueTest} text="Continue Session" color={G["third-color"]}/>
+                            </View>
+                            <View style={styles.buttonBlock}>
+                                <HugoButton onPress={this.startTest} text="Start new Session" color={G["secondary-color"]}/>
+                            </View>
+                        </View>
                     </View>
-                    : <View>
-                        <Text>Start a new Session</Text>
-                        <HugoButton onPress={this.startTest} text="Start Session"/>
+                    : <View style={{flex: 1}}>
+                        <Header text="Ready ?" textStyle={{ color: 'black', fontSize: 18 }}/>
+                        <View style={{backgroundColor: 'white', paddingBottom: 20}}>
+                            <Header text="Mode" textStyle={{ color: 'black', fontSize: 14 }}/>
+                            <CheckBox checked checkedColor={G['primary-color']} title='Standard'/>
+                            <CheckBox checkedColor={G['primary-color']} title='Practice'/>
+                        </View>
+                        <View style={styles.ButtonsGroup}>
+                            <HugoButton onPress={this.startTest} text="Start Session"/>
+                        </View>
                     </View>
                 }
 
@@ -45,17 +75,25 @@ class ReadyScreen extends React.Component {
 };
 const styles = StyleSheet.create({
     globalView: {
+        //backgroundColor: 'limegreen',
         backgroundColor: G["bacground-color-view"],
         flex: 1,
+    },
+    sessionDescription: {
+        backgroundColor: 'white',
+        width: Dimensions.get('screen').width,
+        height: Dimensions.get('screen').height * 0.3,
+        //elevation: 5,
+    },
+    buttonBlock: {
+    },
+    ButtonsGroup: {
+        //backgroundColor: 'purple',
+        flex: 1,
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    centerText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color :'white',
-    },
+        justifyContent: 'space-around',
+        alignItems: 'center',
+    }
 });
 
 
