@@ -12,3 +12,11 @@ export const setCurrentTest = (testType) => {
         payload: testType,
     };
 };
+
+export const setSession = (idTest, session) => {
+    return {
+        type: 'SET_SESSION',
+        payload: session,
+        idTest: idTest,
+    };
+};

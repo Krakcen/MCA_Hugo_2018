@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, Button, Image, StyleSheet, Dimensions, TouchableOpacity, BackHandler, ToastAndroid } from 'react-native';
 import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
 import { withNavigationFocus } from 'react-navigation-is-focused-hoc';
@@ -11,11 +11,40 @@ import { Audio, Permissions, FileSystem } from 'expo';
 import HugoButton from '../../UI/Buttons.js';
 import HugoList from '../../UI/List';
 import Header from '../../UI/Header.js';
-import { setCurrentTest, setTest } from '../../../Redux/Actions';
+import { setCurrentTest, setTest, setSession } from '../../../Redux/Actions';
 import G, { gStyles } from '../../../Globals.js';
 
-let EndView = ({onSessionEnd, onSessionStartOver, onSessionSave, ...props}) => {
+const getTimeDiff = (begin, end) => {
+
+    if (end < begin) {
+        end.setDate(end.getDate() + 1);
+    }
+
+    let diff = end - begin;
+
+    let msec = diff;
+    let hh = Math.floor(msec / 1000 / 60 / 60);
+    msec -= hh * 1000 * 60 * 60;
+    let mm = Math.floor(msec / 1000 / 60);
+    msec -= mm * 1000 * 60;
+    let ss = Math.floor(msec / 1000);
+    msec -= ss * 1000;
+
+    return ({
+        s: ss,
+        m: mm,
+        h: hh,
+    });
+};
+
+let EndView = ({onSessionReview, onSessionEnd, onSessionStartOver, onSessionSave, ...props}) => {
     const endChoicesList = [
+        {
+            text: 'Review Session',
+            chevronColor: G["third-color"],
+            onPress: onSessionReview,
+            icon: <Icon style={{ paddingRight:15, paddingLeft:10 }} name="eye" size={30} color={G["third-color"]} />,
+        },
         {
             text: 'Save Session',
             chevronColor: G.buttons.success,
@@ -47,7 +76,11 @@ let TestView = ({...ctx, props}) => {
         <View style={testViewStyles.globalView}>
             <Header text={"#" + (props.tests[props.currentTest].sessionStep + 1)} textStyle={testViewStyles.header}/>
             <View style={testViewStyles.sentenceWrapper}>
-                <Text style={{color: G["secondary-color"]}}>{ctx.sentenceList[props.tests[props.currentTest].sessionStep]}</Text>
+                { props.tests[props.currentTest].session.list.length
+                    ? <HugoButton onPress={ctx.onEndSession} text={"End Session"} color={G.buttons.success}/>
+                    : <Text style={{color: G["secondary-color"]}}>Play Audio, Record Patient, Evaluate</Text>
+                }
+                {/*<Text style={{color: G["secondary-color"]}}>{ctx.sentenceList[props.tests[props.currentTest].sessionStep]}</Text>*/}
             </View>
             <View style={ testViewStyles.soundGroupWrapper }>
                 <View style={testViewStyles.imageSoundWrapper}>
@@ -55,12 +88,12 @@ let TestView = ({...ctx, props}) => {
                         disabled={props.tests[props.currentTest].recording}
                         style={{ flex:1}}
                         activeOpacity={0.4}
-                        onPress={ctx.loadNewPlaybackInstance}
+                        onPress={props.tests[props.currentTest].playing ? ctx.pauseAudio : ctx.loadNewPlaybackInstance}
                     >
                         <Image
                             resizeMode='contain'
                             style={{ flex:1, width: null, height: null, opacity: props.tests[props.currentTest].recording ? 0.4 : null}}
-                            source={props.tests[props.currentTest].playing ? require('../../../Res/UI/play2.png') : require('../../../Res/UI/playsleep.png')}
+                            source={props.tests[props.currentTest].playing ? require('../../../Res/UI/pause.png') : require('../../../Res/UI/playsleep.png')}
                         />
                     </TouchableOpacity>
                 </View>
@@ -95,14 +128,14 @@ let TestView = ({...ctx, props}) => {
                 ? <View style={testViewStyles.submitButtonsWrapper}>
                     <View>
                         <HugoButton
-                            onPress={ctx.onNextClick}
+                            onPress={() => ctx.onNextClick(true)}
                             text={"Correct"}
                             color={G.buttons.success}
                         />
                     </View>
                     <View>
                         <HugoButton
-                            onPress={ctx.onNextClick}
+                            onPress={() => ctx.onNextClick(false)}
                             text={"Incorrect"}
                             color={G.buttons.danger}
                         />
@@ -160,9 +193,11 @@ class SingleTest extends React.Component {
     constructor(props) {
         super(props);
 
+        this.props.navigation.setParams({otherParam: 'Updated!'});
+
         const soundPathProto = "./Sounds/";
         const soundTypeProto = ".mp3";
-        this.soundListProto = [
+        /*this.soundListProto = [
             require('./Sounds/crow.mp3'),
             require('./Sounds/cat.mp3'),
             require('./Sounds/chimpanzee.mp3'),
@@ -173,6 +208,28 @@ class SingleTest extends React.Component {
             require('./Sounds/elephant.mp3'),
             require('./Sounds/lamb.mp3'),
             require('./Sounds/moose.mp3'),
+        ];*/
+        this.soundListProto = [
+            require('./Sounds/prod/def1.wav'),
+            require('./Sounds/prod/def2.wav'),
+            require('./Sounds/prod/def3.wav'),
+            require('./Sounds/prod/def4.wav'),
+            require('./Sounds/prod/def5.wav'),
+            require('./Sounds/prod/def6.wav'),
+            require('./Sounds/prod/def7.wav'),
+            require('./Sounds/prod/def8.wav'),
+            require('./Sounds/prod/def9.wav'),
+            require('./Sounds/prod/def10.wav'),
+            require('./Sounds/prod/def11.wav'),
+            require('./Sounds/prod/def12.wav'),
+            require('./Sounds/prod/def13.wav'),
+            require('./Sounds/prod/def14.wav'),
+            require('./Sounds/prod/def15.wav'),
+            require('./Sounds/prod/def16.wav'),
+            require('./Sounds/prod/def17.wav'),
+            require('./Sounds/prod/def18.wav'),
+            require('./Sounds/prod/def19.wav'),
+            require('./Sounds/prod/def20.wav'),
         ];
         this.sentenceList = [
             "Crow",
@@ -189,13 +246,18 @@ class SingleTest extends React.Component {
         this.playbackInstance = null;
         this.recordInstance = null;
         this.patientAudioFile = null;
+        this.responseTime = null;
+        this.baseTime = null;
 
         this.onNextClick = this.onNextClick.bind(this);
 
+        this.preventBackButton = this.preventBackButton.bind(this);
+        this.onSessionReview = this.onSessionReview.bind(this);
         this.onSessionEndedRedirection = this.onSessionEndedRedirection.bind(this);
         this.onSessionEndedStartOver = this.onSessionEndedStartOver.bind(this);
         this.onSessionEndSave = this.onSessionEndSave.bind(this);
 
+        this.pauseAudio = this.pauseAudio.bind(this);
         this.loadNewPlaybackInstance = this.loadNewPlaybackInstance.bind(this);
         this.unloadInstance = this.unloadInstance.bind(this);
         this.startRecording = this.startRecording.bind(this);
@@ -205,10 +267,11 @@ class SingleTest extends React.Component {
         this.onPatientPlaybackUpdate = this.onPatientPlaybackUpdate.bind(this);
 
         this.onPlaybackUpdate = this.onPlaybackUpdate.bind(this);
+        this.onEndSession = this.onEndSession.bind(this);
 
         (async () => {
             const {status} = await Permissions.getAsync(Permissions.AUDIO_RECORDING);
-            console.log(status);
+            //console.log(status);
         })();
     }
     componentDidMount() {
@@ -216,7 +279,7 @@ class SingleTest extends React.Component {
 
     }
     playPatientAnswer() {
-        console.log("playing patient answer");
+        //console.log("playing patient answer");
         if (this.patientAudioFile != null) {
             this.patientAudioFile.setOnPlaybackStatusUpdate(this.onPatientPlaybackUpdate);
             this.patientAudioFile.playAsync();
@@ -233,7 +296,7 @@ class SingleTest extends React.Component {
         } else {
             if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
                 this.patientAudioFile.stopAsync();
-                console.log("patient audio finished playing waiting");
+                //console.log("patient audio finished playing waiting");
             }
         }
     }
@@ -246,11 +309,22 @@ class SingleTest extends React.Component {
                 await this.playbackInstance.unloadAsync();
                 this.playbackInstance.setOnPlaybackStatusUpdate(null);
                 this.playbackInstance = null;
-                console.log("instance unloaded!")
+                //console.log("instance unloaded!")
             }
         }
         catch (e) {
             console.log(e);
+        }
+    }
+    pauseAudio() {
+        if (this.playbackInstance != null) {
+            this.playbackPaused = true;
+
+            this.playbackInstance.pauseAsync();
+
+            this.props.setTest(this.props.currentTest, {
+                playing: false,
+            });
         }
     }
     async loadNewPlaybackInstance() {
@@ -258,99 +332,142 @@ class SingleTest extends React.Component {
             playing: true,
         });
 
-        if (this.playbackInstance != null) {
-            await this.playbackInstance.unloadAsync();
-            this.playbackInstance.setOnPlaybackStatusUpdate(null);
-            this.playbackInstance = null;
-            console.log("previous instance unloaded");
-        }
+        if (this.playbackPaused) {
+            this.playbackPaused = false;
 
-        try {
-            const source = this.soundListProto[this.props.tests[this.props.currentTest].sessionStep];
-            const initialStatus = {shouldPlay: true};
-            const {sound, status} = await Audio.Sound.create(
-                source,
-                initialStatus,
-                this.onPlaybackUpdate,
-            );
-            this.playbackInstance = sound;
+            this.playbackInstance.playAsync();
         }
-        catch (e) {
-            console.log(e);
+        else {
+            if (this.playbackInstance != null) {
+                await this.playbackInstance.unloadAsync();
+                this.playbackInstance.setOnPlaybackStatusUpdate(null);
+                this.playbackInstance = null;
+                //console.log("previous instance unloaded");
+            }
+
+            try {
+                const source = this.soundListProto[this.props.tests[this.props.currentTest].sessionStep];
+                const initialStatus = {shouldPlay: true};
+                const {sound, status} = await Audio.Sound.create(
+                    source,
+                    initialStatus,
+                    this.onPlaybackUpdate,
+                );
+                this.playbackInstance = sound;
+            }
+            catch (e) {
+                console.log(e);
+            }
         }
     }
     async startRecording() {
-        this.props.setTest(this.props.currentTest, {
-            recording: true,
-        });
+        if (!this.recordingClicked) {
+            this.recordingClicked = true;
+            this.recordInstance = new Audio.Recording();
+            try {
+                await this.recordInstance.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+                //console.log("Recording Prepared");
 
-        this.recordInstance = new Audio.Recording();
-        try {
-            await this.recordInstance.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
-            //console.log("Recording Prepared");
+                this.recordInstance.setOnRecordingStatusUpdate(this.onRecordUpdate);
 
-            this.recordInstance.setOnRecordingStatusUpdate(this.onRecordUpdate);
+                await this.recordInstance.startAsync().then(() => {
+                    if (!this.baseTime)
+                        this.baseTime = new Date();
+                    this.props.setTest(this.props.currentTest, {
+                        statusBar: "Currently Recording",
+                        voiceRecorded: false,
+                        recording: true,
+                    });
+                    this.recordingClicked = false;
+                });
+                //console.log("Recording");
+            }
+            catch (e) {
 
-            await this.recordInstance.startAsync();
-            //console.log("Recording");
-
-            this.props.setTest(this.props.currentTest, {
-                statusBar: "Currently Recording",
-                voiceRecorded: false,
-            });
-        }
-        catch (e) {
-
+            }
         }
     }
     async stopRecording() {
-        try {
-            if (this.recordInstance != null) {
-                await this.recordInstance.stopAndUnloadAsync();
-                //console.log("Record Stopped");
+        //console.log(this.recordingClicked);
+        if (!this.recordingClicked) {
+            //console.log("before stopping");
+            this.recordingClicked = true;
+            try {
+                if (this.recordInstance != null) {
+                    await this.recordInstance.stopAndUnloadAsync().then(() => {
+                        this.responseTime = getTimeDiff(this.baseTime, new Date());
+                        this.baseTime = null;
 
-                //const info = await FileSystem.getInfoAsync(this.recordInstance.getURI());
-                //console.log(`FILE INFO: ${JSON.stringify(info)}`);
+                        this.props.setTest(this.props.currentTest, {
+                            recording: false,
+                            statusBar: "Record Ended, creating audio file...",
+                        });
+                        this.recordingClicked = false;
+                    });
 
-                const { sound, status } = await this.recordInstance.createNewLoadedSound({},
-                    (status) => {
-                        if (status.isLoaded) {
-                            console.log("isLoadedCallback");
-                            this.props.setTest(this.props.currentTest, {
-                                voiceRecorded: true,
-                            });
-                        }
-                    },
-                );
-                this.patientAudioFile = sound;
+                    const {sound, status} = await this.recordInstance.createNewLoadedSound({},
+                        (status) => {
+                            if (status.isLoaded) {
+                                this.props.setTest(this.props.currentTest, {
+                                    voiceRecorded: true,
+                                });
+                            }
+                        },
+                    );
+                    this.patientAudioFile = sound;
+                }
+            }
+            catch (e) {
+                console.log(e);
             }
         }
-        catch (e) {
-            console.log(e);
-        }
+    }
+    preventBackButton() {
+        return (true);
     }
     componentWillUnmount() {
-        console.log('Will Unmount');
-        this.unloadInstance();
+        //console.log('Will Unmount');
+        //this.unloadInstance();
+        this.props.setTest(this.props.currentTest, {
+            voiceRecorded: false,
+            recording: false,
+            playing: false,
+            statusBar: "Play Audio File",
+        });
+        this.recordingClicked = false;
+
+        if (this.recordInstance) {
+            //console.log("unloading record");
+            this.recordInstance.stopAndUnloadAsync();
+        }
+        else if (this.playbackInstance) {
+            //console.log("unloaded audio");
+            this.playbackInstance.unloadAsync();
+        }
     }
     componentWillReceiveProps(nextProps) {
+        const { params } = nextProps.navigation.state;
         //Update Session Here
         if (!this.props.isFocused && nextProps.isFocused) {
-            const { params } = nextProps.navigation.state;
+            if (params["sessionStep"] > 19) {
+                //console.log("entering");
+                BackHandler.addEventListener('hardwareBackPress', this.preventBackButton);
+            }
             //console.log(params["sessionStep"]);
             nextProps.setTest(nextProps.currentTest, {sessionStep: params["sessionStep"]});
         }
         if (this.props.isFocused && !nextProps.isFocused) {
-            // screen exit
+            if (params["sessionStep"] > 19) {
+                //console.log("exiting");
+                BackHandler.removeEventListener('hardwareBackPress', this.preventBackButton);
+            }
         }
     }
     onPlaybackUpdate(playbackStatus) {
         if (!playbackStatus.isLoaded) {
             //console.log("audio unloaded");
-            // Update your UI for the unloaded state
             if (playbackStatus.error) {
                 console.log(`Encountered a fatal error during playback: ${playbackStatus.error}`);
-                // Send Expo team the error on Slack or the forums so we can help you debug!
             }
         } else {
             //console.log("audio loaded");
@@ -369,6 +486,8 @@ class SingleTest extends React.Component {
             }
 
             if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
+                this.baseTime = new Date();
+
                 console.log("audio finished playing waiting");
                 this.props.setTest(this.props.currentTest, {
                     playing: false,
@@ -379,31 +498,88 @@ class SingleTest extends React.Component {
         }
     }
     onRecordUpdate(status) {
-        if (status.canRecord) {
+        //console.log(status);
+        if (status.isRecording) {
+
             //console.log("can record");
         } else if (status.isDoneRecording) {
-            this.props.setTest(this.props.currentTest, {
+            /*this.props.setTest(this.props.currentTest, {
                 recording: false,
                 statusBar: "Record Ended, creating audio file...",
-            });
+            });*/
         }
     }
-    onNextClick() {
+    onEndSession() {
+        //Reset Test
+        this.props.setTest(this.props.currentTest, {
+            voiceRecorded: false,
+            recording: false,
+            playing: false,
+            statusBar: "Play Audio File",
+        });
+
+        this.props.navigation.navigate('SingleTest', {
+            sessionStep: 20,
+        });
+    }
+    onNextClick(answer) {
+        const { list } = this.props.tests[this.props.currentTest].session;
+
+        const resObj = {
+            step: this.props.tests[this.props.currentTest].sessionStep,
+            responseTime: this.responseTime.s,
+            patientRecord: /*this.patientAudioFile*/"proto",
+            name: "Entry number " + (this.props.tests[this.props.currentTest].sessionStep + 1),
+            validation: answer,
+        };
+        if (list.length <= this.props.tests[this.props.currentTest].sessionStep ) {
+            //console.log("new entry needed");
+            list.push(resObj);
+        }
+        else {
+            console.log("modifying entry");
+            list[resObj.step] = resObj;
+        }
+        //console.log(list);
+
+        this.props.setSession(this.props.currentTest, {
+            length: list.length,
+            list: list
+        });
+
         this.unloadInstance();
         this.props.setTest(this.props.currentTest, {
             voiceRecorded: false,
+            recording: false,
+            playing: false,
             statusBar: "Play Audio File",
         });
+        this.recordingClicked = false;
+
+        if (this.recordInstance) {
+            //console.log("unloading record");
+            this.recordInstance.stopAndUnloadAsync();
+        }
+        else if (this.playbackInstance) {
+            //console.log("unloaded audio");
+            this.playbackInstance.unloadAsync();
+        }
         this.props.navigation.navigate('SingleTest', {
             sessionStep: this.props.tests[this.props.currentTest].sessionStep + 1,
         });
     }
-
+    onSessionReview() {
+        this.props.navigation.navigate('SentenceValidatorReview');
+    }
     onSessionEndSave() {
-        console.log("Saving Session");
+        //console.log("Saving Session");
     }
     onSessionEndedStartOver() {
         this.props.setTest(this.props.currentTest, {
+            session: {
+                "length": 0,
+                "list": [],
+            },
             sessionStep: 0,
             started: false,
             playing: false,
@@ -411,13 +587,6 @@ class SingleTest extends React.Component {
             voiceRecorded: false,
             statusBar: "Play Audio File",
         });
-        this.props.navigation.dispatch(NavigationActions.reset({
-            index: 0,
-            key: null,
-            actions: [
-                NavigationActions.navigate({ routeName: 'SingleTest'})
-            ]
-        }));
     }
     onSessionEndedRedirection() {
         this.props.setTest(this.props.currentTest, {
@@ -439,12 +608,15 @@ class SingleTest extends React.Component {
     }
 
     render() {
+        //console.log(this.props.tests[this.props.currentTest].sessionStep + 1);
+        //console.log(this.props.tests[this.props.currentTest].session);
         return (
             <View style={styles.globalView}>
                 {this.props.isFocused
                     ? <View style={{flex:1}}>
-                        { this.props.tests[this.props.currentTest].sessionStep > 9
+                        { this.props.tests[this.props.currentTest].sessionStep > 19
                             ? <EndView
+                                onSessionReview={this.onSessionReview}
                                 onSessionStartOver={this.onSessionEndedStartOver}
                                 onSessionSave={this.onSessionEndSave}
                                 onSessionEnd={this.onSessionEndedRedirection}
@@ -483,7 +655,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         setCurrentTest: testType => dispatch(setCurrentTest(testType)),
-        setTest: (idTest, data) => dispatch(setTest(idTest, data))
+        setTest: (idTest, data) => dispatch(setTest(idTest, data)),
+        setSession: (idTest, session) => dispatch(setSession(idTest, session)),
     };
 };
 export default withNavigationFocus(connect(mapStateToProps, mapDispatchToProps)(SingleTest));

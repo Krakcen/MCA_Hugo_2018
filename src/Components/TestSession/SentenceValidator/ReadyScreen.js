@@ -17,7 +17,13 @@ class ReadyScreen extends React.Component {
     }
     startTest() {
         this.props.setCurrentTest("sentenceValidator");
-        this.props.setTest("sentenceValidator", { started: true });
+        this.props.setTest("sentenceValidator", {
+            started: true,
+            session: {
+                "length": 0,
+                "list": [],
+            }
+        });
         this.props.navigation.navigate('SingleTest', {
             sessionStep: 0,
         });
@@ -37,13 +43,14 @@ class ReadyScreen extends React.Component {
         //console.log(Dimensions.get('screen').height * 0.3 + " WTF");
         return (
             <View style={styles.globalView}>
-                {this.props.tests["sentenceValidator"].sessionStep
+                {this.props.tests[this.props.currentTest].sessionStep
                     ? <View style={{flex: 1}}>
                         <Header text="You have a session in progress" textStyle={{ color: 'black', fontSize: 18 }}/>
                         <View style={styles.sessionDescription}>
                             <View style={{flex: 1, justifyContent: 'space-around', alignItems:'center'}}>
                                 <Text style={{fontSize: 14}}>Standard Mode</Text>
-                                <Text style={{fontSize: 14}}>Progress: 4/10</Text>
+                                <Text style={{fontSize: 14}}>
+                                    {"Progress: " + (this.props.tests[this.props.currentTest].sessionStep + 1) + "/20"}</Text>
                             </View>
                         </View>
                         <View style={styles.ButtonsGroup}>
@@ -61,7 +68,7 @@ class ReadyScreen extends React.Component {
                         <View style={{backgroundColor: 'white', paddingBottom: 20}}>
                             <Header text="Mode" textStyle={{ color: 'black', fontSize: 14 }}/>
                             <CheckBox checked checkedColor={G['primary-color']} title='Standard'/>
-                            <CheckBox checkedColor={G['primary-color']} title='Practice'/>
+                            {/*<CheckBox checkedColor={G['primary-color']} title='Practice'/>*/}
                         </View>
                         <View style={styles.ButtonsGroup}>
                             <HugoButton onPress={this.startTest} text="Start Session"/>

@@ -4,6 +4,8 @@ export default TestsReducer = (state = StoreInit.tests, action) => {
     switch (action.type) {
         case 'SET_TEST':
             return { ...state, [action.idTest]: {...state[action.idTest], ...action.payload}};
+        case 'SET_SESSION':
+            return {...state, [action.idTest]: { ...state[action.idTest], session: { ...state[action.idTest].session, ...action.payload } }};
         default:
             return (state);
     }

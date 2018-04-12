@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, StatusBar, Dimensions } from 'react-native';
+import { withNavigationFocus } from 'react-navigation-is-focused-hoc';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, StatusBar, Dimensions, BackHandler } from 'react-native';
 
 import G, { gStyles } from '../../Globals.js';
 import HugoButton, { ButtonPrimary } from '../UI/Buttons.js';
@@ -14,6 +15,25 @@ const whichOrientation = () => {
 };
 
 class HomePageScreen extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    preventBackButton() {
+        return (true);
+    }
+    componentWillReceiveProps(nextProps) {
+        /*const { params } = nextProps.navigation.state;
+        console.log("kek");
+        console.log(nextProps.navigation.state);
+        if (!this.props.isFocused && nextProps.isFocused) {
+            console.log("entering home");
+            BackHandler.addEventListener('hardwareBackPress', this.preventBackButton);
+        }
+        if (this.props.isFocused && !nextProps.isFocused) {
+            console.log("leaving home");
+            BackHandler.removeEventListener('hardwareBackPress', this.preventBackButton);
+        }*/
+    }
     render() {
         return (
             <View style={styles.globalView} onLayout={event => this.forceUpdate()}>
@@ -191,7 +211,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(HomePageScreen);
+export default withNavigationFocus(connect(mapStateToProps, mapDispatchToProps)(HomePageScreen));
 
 //FONT TESTING ANDROID
 /*

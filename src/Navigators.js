@@ -4,7 +4,7 @@ import { StackNavigator, DrawerNavigator, DrawerItems, SafeAreaView } from 'reac
 
 import { HomePageScreen, AboutScreen, ProfileScreen, SettingsScreen, TestListScreen } from './Components';
 import G, { gStyles } from './Globals.js';
-import { ReadyScreen, SingleTest } from './Components/TestSession/SentenceValidator';
+import { ReadyScreen, SingleTest, ReviewScreen } from './Components/TestSession/SentenceValidator';
 import { transitionTest, transitionPress, transitionSlideLeft, transitionSlideTop } from './Components/UI/Animations';
 
 const HamburgerHeader = ({ navigation }) => {
@@ -78,23 +78,41 @@ const SentenceValidatorNav = StackNavigator({
     'SentenceValidatorStart': {
         'screen': ReadyScreen,
         'navigationOptions': ({ navigation }) => ({
-            title: 'Sentence Validator',
             drawerLockMode: 'locked-closed',
+            //headerMode: 'none',
         })
     },
     'SingleTest': {
         'screen': SingleTest,
         'navigationOptions': ({ navigation }) => ({
-            title: 'Single Test',
             drawerLockMode: 'locked-closed',
+            //headerMode: 'none',
         })
-    }
+    },
+    'SentenceValidatorReview': {
+        'screen': ReviewScreen,
+        'navigationOptions': ({ navigation }) => ({
+            title: 'Review',
+            drawerLockMode: 'locked-closed',
+            header:null,
+        })
+    },
 }, {
     initialRouteName: 'SentenceValidatorStart',
     transitionConfig: transitionSlideTop,
     headerMode: 'none',
     //gesturesEnabled: false,
 });
+
+//Override getStateForAction, prevents going back after session
+/*const prevGetStateForActionSentenceValidator = SentenceValidatorNav.router.getStateForAction;
+SentenceValidatorNav.router.getStateForAction = (action, state) => {
+    if (action.type === 'Navigation/BACK' && state && state.routes[state.routes.length - 1].params && state.routes[state.routes.length - 1].params.sessionStep > 19) {
+        console.log("NOPE");
+        return (null);
+    }
+    return prevGetStateForActionSentenceValidator(action, state);
+};*/
 
 /////////////////////////////
 

@@ -16,6 +16,7 @@ const HugoButton = ({ text, onPress, color = G["primary-color"] }) => {
         </TouchableOpacity>
     );
 };
+
 const hugoButtonStyles = StyleSheet.create({
     textStyle: {
         fontSize: G.buttons["fontSize"],
