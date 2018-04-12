@@ -165,8 +165,8 @@ class ReviewScreen extends React.Component {
     render() {
         return (
             <View style={reviewStyles.globalWrapper}>
+                <Header text="Session Review" textStyle={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}/>
                 <View style={reviewStyles.contentWrapper}>
-                    <Header text="Session Review" textStyle={{ color: 'black', fontSize: 18, fontWeight: 'bold' }}/>
                     {this.errorDisplay
                         ? <View style={reviewStyles.errorWrapper}>
                             <Header text="Could not display results" textStyle={{ color: 'black', fontSize: 18, fontWeight: 'bold' }}/>
@@ -180,7 +180,7 @@ class ReviewScreen extends React.Component {
                             />
                         </View>
                     }
-
+                    <Text>Mdr</Text>
                 </View>
             </View>
         );
@@ -188,11 +188,12 @@ class ReviewScreen extends React.Component {
 }
 const reviewStyles = StyleSheet.create({
     globalWrapper: {
-        flex: 1,
-        //backgroundColor: G["bacground-color-view"],
+        flex:1,
+        paddingTop: StatusBar.currentHeight,
+        backgroundColor: G["primary-color"],
     },
     contentWrapper: {
-        marginTop: StatusBar.currentHeight,
+        //marginTop: StatusBar.currentHeight,
         flex:1,
         //backgroundColor: 'limegreen',
     },

@@ -2,18 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ba59925a-4952-453b-838d-3865117ca050" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Components/TestSession/SentenceValidator/ReviewScreen.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Res/UI/playsleep.png" afterPath="$PROJECT_DIR$/src/Res/UI/playsleep.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Components/HomePage/HomePage.js" afterPath="$PROJECT_DIR$/src/Components/HomePage/HomePage.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Components/TestSession/SentenceValidator/ReadyScreen.js" afterPath="$PROJECT_DIR$/src/Components/TestSession/SentenceValidator/ReadyScreen.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Components/TestSession/SentenceValidator/SingleTest.js" afterPath="$PROJECT_DIR$/src/Components/TestSession/SentenceValidator/SingleTest.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Components/TestSession/SentenceValidator/index.js" afterPath="$PROJECT_DIR$/src/Components/TestSession/SentenceValidator/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Components/UI/Buttons.js" afterPath="$PROJECT_DIR$/src/Components/UI/Buttons.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Navigators.js" afterPath="$PROJECT_DIR$/src/Navigators.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Redux/Actions.js" afterPath="$PROJECT_DIR$/src/Redux/Actions.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Redux/StoreInit.js" afterPath="$PROJECT_DIR$/src/Redux/StoreInit.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Redux/reducers/TestsReducer.js" afterPath="$PROJECT_DIR$/src/Redux/reducers/TestsReducer.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Components/TestSession/SentenceValidator/ReviewScreen.js" afterPath="$PROJECT_DIR$/src/Components/TestSession/SentenceValidator/ReviewScreen.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -182,8 +171,8 @@
       <file leaf-file-name="ReviewScreen.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Components/TestSession/SentenceValidator/ReviewScreen.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="902">
-              <caret line="177" column="40" lean-forward="true" selection-start-line="177" selection-start-column="40" selection-end-line="177" selection-end-column="40" />
+            <state relative-caret-position="1855">
+              <caret line="193" column="6" lean-forward="true" selection-start-line="193" selection-start-column="6" selection-end-line="193" selection-end-column="6" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
                 <element signature="e#1857#2323#0" expanded="false" />
@@ -835,12 +824,12 @@
       <workItem from="1523439410282" duration="162000" />
       <workItem from="1523440677387" duration="7276000" />
       <workItem from="1523532466952" duration="1658000" />
-      <workItem from="1523514996295" duration="19120000" />
+      <workItem from="1523514996295" duration="19779000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="270457000" />
+    <option name="totallyTimeSpent" value="271116000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1855" height="1056" extended-state="6" />
@@ -1406,8 +1395,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Components/TestSession/SentenceValidator/ReviewScreen.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="902">
-          <caret line="177" column="40" lean-forward="true" selection-start-line="177" selection-start-column="40" selection-end-line="177" selection-end-column="40" />
+        <state relative-caret-position="1855">
+          <caret line="193" column="6" lean-forward="true" selection-start-line="193" selection-start-column="6" selection-end-line="193" selection-end-column="6" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
             <element signature="e#1857#2323#0" expanded="false" />
